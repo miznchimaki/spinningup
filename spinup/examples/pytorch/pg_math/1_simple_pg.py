@@ -6,6 +6,7 @@ import numpy as np
 import gym
 from gym.spaces import Discrete, Box
 
+
 def mlp(sizes, activation=nn.Tanh, output_activation=nn.Identity):
     # Build a feedforward neural network.
     layers = []
@@ -14,9 +15,9 @@ def mlp(sizes, activation=nn.Tanh, output_activation=nn.Identity):
         layers += [nn.Linear(sizes[j], sizes[j+1]), act()]
     return nn.Sequential(*layers)
 
+
 def train(env_name='CartPole-v0', hidden_sizes=[32], lr=1e-2, 
           epochs=50, batch_size=5000, render=False):
-
     # make environment, check spaces, get obs / act dims
     env = gym.make(env_name)
     assert isinstance(env.observation_space, Box), \
@@ -66,7 +67,6 @@ def train(env_name='CartPole-v0', hidden_sizes=[32], lr=1e-2,
 
         # collect experience by acting in the environment with current policy
         while True:
-
             # rendering
             if (not finished_rendering_this_epoch) and render:
                 env.render()
@@ -106,7 +106,7 @@ def train(env_name='CartPole-v0', hidden_sizes=[32], lr=1e-2,
         batch_loss = compute_loss(obs=torch.as_tensor(batch_obs, dtype=torch.float32),
                                   act=torch.as_tensor(batch_acts, dtype=torch.int32),
                                   weights=torch.as_tensor(batch_weights, dtype=torch.float32)
-                                  )
+                                 )
         batch_loss.backward()
         optimizer.step()
         return batch_loss, batch_rets, batch_lens
@@ -116,6 +116,7 @@ def train(env_name='CartPole-v0', hidden_sizes=[32], lr=1e-2,
         batch_loss, batch_rets, batch_lens = train_one_epoch()
         print('epoch: %3d \t loss: %.3f \t return: %.3f \t ep_len: %.3f'%
                 (i, batch_loss, np.mean(batch_rets), np.mean(batch_lens)))
+
 
 if __name__ == '__main__':
     import argparse
