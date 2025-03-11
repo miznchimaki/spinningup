@@ -49,7 +49,6 @@ def train(env_name='CartPole-v0', hidden_sizes=[32], lr=1e-2,
     optimizer = Adam(logits_net.parameters(), lr=lr)
 
     # for training policy
-    # TODO: Now here
     def train_one_epoch():
         # make some empty lists for logging.
         batch_obs = []          # for observations
@@ -104,6 +103,7 @@ def train(env_name='CartPole-v0', hidden_sizes=[32], lr=1e-2,
 
         # take a single policy gradient update step
         optimizer.zero_grad()
+        # TODO: Now here
         batch_loss = compute_loss(obs=torch.as_tensor(batch_obs, dtype=torch.float32),
                                   act=torch.as_tensor(batch_acts, dtype=torch.int32),
                                   weights=torch.as_tensor(batch_weights, dtype=torch.float32)
