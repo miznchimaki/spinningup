@@ -10,9 +10,9 @@ from gym.spaces import Discrete, Box
 def mlp(sizes, activation=nn.Tanh, output_activation=nn.Identity):
     # Build a feedforward neural network.
     layers = []
-    for j in range(len(sizes)-1):
-        act = activation if j < len(sizes)-2 else output_activation
-        layers += [nn.Linear(sizes[j], sizes[j+1]), act()]
+    for j in range(len(sizes) - 1):
+        act = activation if j < len(sizes) - 2 else output_activation
+        layers += [nn.Linear(sizes[j], sizes[j + 1]), act()]
     return nn.Sequential(*layers)
 
 
@@ -29,7 +29,7 @@ def train(env_name='CartPole-v0', hidden_sizes=[32], lr=1e-2,
     n_acts = env.action_space.n
 
     # make core of policy network
-    logits_net = mlp(sizes=[obs_dim]+hidden_sizes+[n_acts])
+    logits_net = mlp(sizes=[obs_dim] + hidden_sizes + [n_acts])
 
     # make function to compute action distribution
     def get_policy(obs):

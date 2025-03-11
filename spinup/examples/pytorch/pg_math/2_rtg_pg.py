@@ -20,7 +20,7 @@ def reward_to_go(rews):
     n = len(rews)
     rtgs = np.zeros_like(rews)
     for i in reversed(range(n)):
-        rtgs[i] = rews[i] + (rtgs[i+1] if i+1 < n else 0)
+        rtgs[i] = rews[i] + (rtgs[i + 1] if i + 1 < n else 0)
     return rtgs
 
 
@@ -38,7 +38,7 @@ def train(env_name='CartPole-v0', hidden_sizes=[32], lr=1e-2,
     n_acts = env.action_space.n
 
     # make core of policy network
-    logits_net = mlp(sizes=[obs_dim]+hidden_sizes+[n_acts])
+    logits_net = mlp(sizes=[obs_dim] + hidden_sizes + [n_acts])
 
     # make function to compute action distribution
     def get_policy(obs):
