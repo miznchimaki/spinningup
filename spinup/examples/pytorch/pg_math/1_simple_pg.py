@@ -49,6 +49,7 @@ def train(env_name='CartPole-v0', hidden_sizes=[32], lr=1e-2,
     optimizer = Adam(logits_net.parameters(), lr=lr)
 
     # for training policy
+    # TODO: Now here
     def train_one_epoch():
         # make some empty lists for logging.
         batch_obs = []          # for observations
