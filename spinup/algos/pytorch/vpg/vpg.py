@@ -203,6 +203,7 @@ def vpg(env_fn, actor_critic=core.MLPActorCritic, ac_kwargs=dict(),  seed=0,
     logger.log('\nNumber of parameters: \t pi: %d, \t v: %d\n'%var_counts)
 
     # Set up experience buffer
+    # TODO: Now here
     local_steps_per_epoch = int(steps_per_epoch / num_procs())
     buf = VPGBuffer(obs_dim, act_dim, local_steps_per_epoch, gamma, lam)
 
