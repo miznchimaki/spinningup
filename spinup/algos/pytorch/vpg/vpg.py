@@ -55,6 +55,7 @@ class VPGBuffer:
         for timesteps beyond the arbitrary episode horizon (or epoch cutoff).
         """
 
+        # TODO: Now here
         path_slice = slice(self.path_start_idx, self.ptr)
         rews = np.append(self.rew_buf[path_slice], last_val)
         vals = np.append(self.val_buf[path_slice], last_val)
@@ -203,8 +204,8 @@ def vpg(env_fn, actor_critic=core.MLPActorCritic, ac_kwargs=dict(),  seed=0,
     logger.log('\nNumber of parameters: \t pi: %d, \t v: %d\n'%var_counts)
 
     # Set up experience buffer
-    # TODO: Now here
     local_steps_per_epoch = int(steps_per_epoch / num_procs())
+    # TODO: Now here
     buf = VPGBuffer(obs_dim, act_dim, local_steps_per_epoch, gamma, lam)
 
     # Set up function for computing VPG policy loss
