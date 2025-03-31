@@ -211,9 +211,6 @@ def vpg(env_fn, actor_critic=core.MLPActorCritic, ac_kwargs=dict(),  seed=0,
         obs, act, adv, logp_old = data['obs'], data['act'], data['adv'], data['logp']
 
         # Policy loss
-        # TODO: Now here
-        # TODO: 这里需要调试一下,因为传入的obs不是单个步骤的observation,而是历史所有的observations
-        # TODO: 那通过历史所有的observations,以及policy model的MLP,得到的distribution到底是什么样的
         pi, logp = ac.pi(obs, act)
         loss_pi = -(logp * adv).mean()
 
@@ -236,7 +233,6 @@ def vpg(env_fn, actor_critic=core.MLPActorCritic, ac_kwargs=dict(),  seed=0,
     # Set up model saving
     logger.setup_pytorch_saver(ac)
 
-    # TODO: Now here
     # TODO: comments(一个epoch相当于当前的policy进行连续多个时间步骤的actions)
     def update():
         data = buf.get()
@@ -254,7 +250,7 @@ def vpg(env_fn, actor_critic=core.MLPActorCritic, ac_kwargs=dict(),  seed=0,
         pi_optimizer.step()
 
         # Value function learning
-        for i in range(train_v_iters):
+        for _ in range(train_v_iters):
             vf_optimizer.zero_grad()
             loss_v = compute_loss_v(data)
             loss_v.backward()
@@ -307,7 +303,7 @@ def vpg(env_fn, actor_critic=core.MLPActorCritic, ac_kwargs=dict(),  seed=0,
                 o, ep_ret, ep_len = env.reset(), 0, 0
 
         # Save model
-        if (epoch % save_freq == 0) or (epoch == epochs-1):
+        if (epoch % save_freq == 0) or (epoch == epochs - 1):
             logger.save_state({'env': env}, None)
 
         # Perform VPG update!
