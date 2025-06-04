@@ -3,18 +3,23 @@ import tensorflow as tf
 import scipy.signal
 from gym.spaces import Box, Discrete
 
+
 EPS = 1e-8
+
 
 def combined_shape(length, shape=None):
     if shape is None:
         return (length,)
     return (length, shape) if np.isscalar(shape) else (length, *shape)
 
+
 def placeholder(dim=None):
-    return tf.placeholder(dtype=tf.float32, shape=combined_shape(None,dim))
+    return tf.placeholder(dtype=tf.float32, shape=combined_shape(None, dim))
+
 
 def placeholders(*args):
     return [placeholder(dim) for dim in args]
+
 
 def placeholder_from_space(space):
     if isinstance(space, Box):
@@ -23,24 +28,30 @@ def placeholder_from_space(space):
         return tf.placeholder(dtype=tf.int32, shape=(None,))
     raise NotImplementedError
 
+
 def placeholders_from_spaces(*args):
     return [placeholder_from_space(space) for space in args]
+
 
 def mlp(x, hidden_sizes=(32,), activation=tf.tanh, output_activation=None):
     for h in hidden_sizes[:-1]:
         x = tf.layers.dense(x, units=h, activation=activation)
     return tf.layers.dense(x, units=hidden_sizes[-1], activation=output_activation)
 
+
 def get_vars(scope=''):
     return [x for x in tf.trainable_variables() if scope in x.name]
+
 
 def count_vars(scope=''):
     v = get_vars(scope)
     return sum([np.prod(var.shape.as_list()) for var in v])
 
+
 def gaussian_likelihood(x, mu, log_std):
-    pre_sum = -0.5 * (((x-mu)/(tf.exp(log_std)+EPS))**2 + 2*log_std + np.log(2*np.pi))
+    pre_sum = -0.5 * (((x-mu)/(tf.exp(log_std)+EPS)) ** 2 + 2 * log_std + np.log(2 * np.pi))
     return tf.reduce_sum(pre_sum, axis=1)
+
 
 def discount_cumsum(x, discount):
     """
@@ -63,8 +74,7 @@ def discount_cumsum(x, discount):
 """
 Policies
 """
-
-def mlp_categorical_policy(x, a, hidden_sizes, activation, output_activation, action_space):
+def mlp_categorical_policy(x, a, hidden_sizes, activation, action_space):
     act_dim = action_space.n
     logits = mlp(x, list(hidden_sizes)+[act_dim], activation, None)
     logp_all = tf.nn.log_softmax(logits)

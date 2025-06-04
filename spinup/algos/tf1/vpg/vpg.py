@@ -5,7 +5,7 @@ import time
 import spinup.algos.tf1.vpg.core as core
 from spinup.utils.logx import EpochLogger
 from spinup.utils.mpi_tf import MpiAdamOptimizer, sync_all_params
-from spinup.utils.mpi_tools import mpi_fork, mpi_avg, proc_id, mpi_statistics_scalar, num_procs
+from spinup.utils.mpi_tools import mpi_fork, proc_id, mpi_statistics_scalar, num_procs
 
 
 class VPGBuffer:
@@ -82,11 +82,21 @@ class VPGBuffer:
                 self.ret_buf, self.logp_buf]
 
 
-
-def vpg(env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=dict(), seed=0, 
-        steps_per_epoch=4000, epochs=50, gamma=0.99, pi_lr=3e-4,
-        vf_lr=1e-3, train_v_iters=80, lam=0.97, max_ep_len=1000,
-        logger_kwargs=dict(), save_freq=10):
+def vpg(env_fn, 
+        actor_critic=core.mlp_actor_critic, 
+        ac_kwargs=dict(), 
+        seed=0, 
+        steps_per_epoch=4000, 
+        epochs=50, 
+        gamma=0.99, 
+        pi_lr=3e-4,
+        vf_lr=1e-3, 
+        train_v_iters=80, 
+        lam=0.97, 
+        max_ep_len=1000,
+        logger_kwargs=dict(), 
+        save_freq=10
+       ):
     """
     Vanilla Policy Gradient 
 
@@ -275,6 +285,7 @@ def vpg(env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=dict(), seed=0,
         logger.log_tabular('Time', time.time()-start_time)
         logger.dump_tabular()
 
+
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
@@ -294,7 +305,13 @@ if __name__ == '__main__':
     from spinup.utils.run_utils import setup_logger_kwargs
     logger_kwargs = setup_logger_kwargs(args.exp_name, args.seed)
 
-    vpg(lambda : gym.make(args.env), actor_critic=core.mlp_actor_critic,
-        ac_kwargs=dict(hidden_sizes=[args.hid]*args.l), gamma=args.gamma, 
-        seed=args.seed, steps_per_epoch=args.steps, epochs=args.epochs,
-        logger_kwargs=logger_kwargs)
+    vpg(
+        lambda : gym.make(args.env), 
+        actor_critic=core.mlp_actor_critic,
+        ac_kwargs=dict(hidden_sizes=[args.hid] * args.l), 
+        gamma=args.gamma, 
+        seed=args.seed, 
+        steps_per_epoch=args.steps, 
+        epochs=args.epochs,
+        logger_kwargs=logger_kwargs
+       )
