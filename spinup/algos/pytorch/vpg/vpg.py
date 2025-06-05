@@ -224,7 +224,7 @@ def vpg(env_fn, actor_critic=core.MLPActorCritic, ac_kwargs=dict(),  seed=0,
     # Set up function for computing value loss
     def compute_loss_v(data):
         obs, ret = data['obs'], data['ret']
-        return ((ac.v(obs) - ret)**2).mean()
+        return ((ac.v(obs) - ret) ** 2).mean()
 
     # Set up optimizers for policy and value function
     pi_optimizer = Adam(ac.pi.parameters(), lr=pi_lr)
@@ -233,7 +233,6 @@ def vpg(env_fn, actor_critic=core.MLPActorCritic, ac_kwargs=dict(),  seed=0,
     # Set up model saving
     logger.setup_pytorch_saver(ac)
 
-    # TODO: comments(一个epoch相当于当前的policy进行连续多个时间步骤的actions)
     def update():
         data = buf.get()
 
@@ -259,10 +258,14 @@ def vpg(env_fn, actor_critic=core.MLPActorCritic, ac_kwargs=dict(),  seed=0,
 
         # Log changes from update
         kl, ent = pi_info['kl'], pi_info_old['ent']
-        logger.store(LossPi=pi_l_old, LossV=v_l_old,
-                     KL=kl, Entropy=ent,
+        logger.store(
+                     LossPi=pi_l_old, 
+                     LossV=v_l_old,
+                     KL=kl, 
+                     Entropy=ent,
                      DeltaLossPi=(loss_pi.item() - pi_l_old),
-                     DeltaLossV=(loss_v.item() - v_l_old))
+                     DeltaLossV=(loss_v.item() - v_l_old)
+                    )
 
     # Prepare for interaction with environment
     start_time = time.time()
