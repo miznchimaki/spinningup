@@ -84,10 +84,25 @@ class PPOBuffer:
         return {k: torch.as_tensor(v, dtype=torch.float32) for k,v in data.items()}
 
 
-def ppo(env_fn, actor_critic=core.MLPActorCritic, ac_kwargs=dict(), seed=0, 
-        steps_per_epoch=4000, epochs=50, gamma=0.99, clip_ratio=0.2, pi_lr=3e-4,
-        vf_lr=1e-3, train_pi_iters=80, train_v_iters=80, lam=0.97, max_ep_len=1000,
-        target_kl=0.01, logger_kwargs=dict(), save_freq=10):
+def ppo(
+        env_fn, 
+        actor_critic=core.MLPActorCritic, 
+        ac_kwargs=dict(), 
+        seed=0, 
+        steps_per_epoch=4000, 
+        epochs=50, 
+        gamma=0.99, 
+        clip_ratio=0.2, 
+        pi_lr=3e-4,
+        vf_lr=1e-3, 
+        train_pi_iters=80, 
+        train_v_iters=80, 
+        lam=0.97, 
+        max_ep_len=1000,
+        target_kl=0.01, 
+        logger_kwargs=dict(), 
+        save_freq=10
+       ):
     """
     Proximal Policy Optimization (by clipping), 
 
@@ -284,10 +299,15 @@ def ppo(env_fn, actor_critic=core.MLPActorCritic, ac_kwargs=dict(), seed=0,
 
         # Log changes from update
         kl, ent, cf = pi_info['kl'], pi_info_old['ent'], pi_info['cf']
-        logger.store(LossPi=pi_l_old, LossV=v_l_old,
-                     KL=kl, Entropy=ent, ClipFrac=cf,
+        logger.store(
+                     LossPi=pi_l_old, 
+                     LossV=v_l_old,
+                     KL=kl, 
+                     Entropy=ent, 
+                     ClipFrac=cf,
                      DeltaLossPi=(loss_pi.item() - pi_l_old),
-                     DeltaLossV=(loss_v.item() - v_l_old))
+                     DeltaLossV=(loss_v.item() - v_l_old)
+                    )
 
     # Prepare for interaction with environment
     start_time = time.time()
@@ -326,7 +346,6 @@ def ppo(env_fn, actor_critic=core.MLPActorCritic, ac_kwargs=dict(), seed=0,
                     # only save EpRet / EpLen if trajectory finished
                     logger.store(EpRet=ep_ret, EpLen=ep_len)
                 o, ep_ret, ep_len = env.reset(), 0, 0
-
 
         # Save model
         if (epoch % save_freq == 0) or (epoch == epochs-1):
@@ -372,7 +391,13 @@ if __name__ == '__main__':
     from spinup.utils.run_utils import setup_logger_kwargs
     logger_kwargs = setup_logger_kwargs(args.exp_name, args.seed)
 
-    ppo(lambda : gym.make(args.env), actor_critic=core.MLPActorCritic,
-        ac_kwargs=dict(hidden_sizes=[args.hid]*args.l), gamma=args.gamma, 
-        seed=args.seed, steps_per_epoch=args.steps, epochs=args.epochs,
-        logger_kwargs=logger_kwargs)
+    ppo(
+        lambda : gym.make(args.env), 
+        actor_critic=core.MLPActorCritic,
+        ac_kwargs=dict(hidden_sizes=[args.hid]*args.l), 
+        gamma=args.gamma, 
+        seed=args.seed, 
+        steps_per_epoch=args.steps, 
+        epochs=args.epochs,
+        logger_kwargs=logger_kwargs
+       )
