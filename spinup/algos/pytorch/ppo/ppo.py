@@ -249,10 +249,12 @@ def ppo(
         # Policy loss
         pi, logp = ac.pi(obs, act)
         ratio = torch.exp(logp - logp_old)
-        clip_adv = torch.clamp(ratio, 1-clip_ratio, 1+clip_ratio) * adv
+        clip_adv = torch.clamp(ratio, 1 - clip_ratio, 1 + clip_ratio) * adv
         loss_pi = -(torch.min(ratio * adv, clip_adv)).mean()
 
         # Useful extra info
+        # TODO: Now here
+        # TODO: 仔细看一下KL Divergence的计算方式
         approx_kl = (logp_old - logp).mean().item()
         ent = pi.entropy().mean().item()
         clipped = ratio.gt(1+clip_ratio) | ratio.lt(1-clip_ratio)
@@ -273,6 +275,8 @@ def ppo(
     # Set up model saving
     logger.setup_pytorch_saver(ac)
 
+    # TODO: Now here
+    # TODO: 为什么对同一批数据,PPO要多次更新参数,更新参数的次数为train_pi_iters
     def update():
         data = buf.get()
 
