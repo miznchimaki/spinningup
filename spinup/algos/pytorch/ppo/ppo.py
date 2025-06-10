@@ -249,6 +249,7 @@ def ppo(
         # Policy loss
         # TODO: Now here
         # TODO: 如果要是这么做的话,相当于每一个时间点的observation都有自己的normal distribution
+        # TODO: 这种做法合理么
         pi, logp = ac.pi(obs, act)
         ratio = torch.exp(logp - logp_old)
         clip_adv = torch.clamp(ratio, 1 - clip_ratio, 1 + clip_ratio) * adv
