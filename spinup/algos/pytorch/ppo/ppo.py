@@ -62,7 +62,7 @@ class PPOBuffer:
         # the next two lines implement GAE-Lambda advantage calculation
         deltas = rews[:-1] + self.gamma * vals[1:] - vals[:-1]
         self.adv_buf[path_slice] = core.discount_cumsum(deltas, self.gamma * self.lam)
-        
+
         # the next line computes rewards-to-go, to be targets for the value function
         self.ret_buf[path_slice] = core.discount_cumsum(rews, self.gamma)[:-1]
         
@@ -79,8 +79,13 @@ class PPOBuffer:
         # the next two lines implement the advantage normalization trick
         adv_mean, adv_std = mpi_statistics_scalar(self.adv_buf)
         self.adv_buf = (self.adv_buf - adv_mean) / adv_std
-        data = dict(obs=self.obs_buf, act=self.act_buf, ret=self.ret_buf,
-                    adv=self.adv_buf, logp=self.logp_buf)
+        data = dict(
+                    obs=self.obs_buf, 
+                    act=self.act_buf, 
+                    ret=self.ret_buf, 
+                    adv=self.adv_buf, 
+                    logp=self.logp_buf
+                   )
         return {k: torch.as_tensor(v, dtype=torch.float32) for k,v in data.items()}
 
 
