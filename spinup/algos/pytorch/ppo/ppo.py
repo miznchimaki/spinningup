@@ -257,7 +257,7 @@ def ppo(
         # TODO: 仔细看一下KL Divergence的计算方式
         approx_kl = (logp_old - logp).mean().item()
         ent = pi.entropy().mean().item()
-        clipped = ratio.gt(1+clip_ratio) | ratio.lt(1-clip_ratio)
+        clipped = ratio.gt(1 + clip_ratio) | ratio.lt(1 - clip_ratio)
         clipfrac = torch.as_tensor(clipped, dtype=torch.float32).mean().item()
         pi_info = dict(kl=approx_kl, ent=ent, cf=clipfrac)
 
