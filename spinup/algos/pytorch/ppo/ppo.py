@@ -275,8 +275,6 @@ def ppo(
     # Set up model saving
     logger.setup_pytorch_saver(ac)
 
-    # TODO: Now here
-    # TODO: 为什么对同一批数据,PPO要多次更新参数,更新参数的次数为train_pi_iters
     def update():
         data = buf.get()
 
